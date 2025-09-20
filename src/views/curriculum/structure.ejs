@@ -1,0 +1,35 @@
+<!-- File: src/views/curriculum/structure.ejs
+     Role: แสดงโครงสร้างหลักสูตรปี 1 แยกตามเทอม (รวม GenEd บังคับ) -->
+
+<h2>โครงสร้างหลักสูตรปี 1</h2>
+<p>
+  <b>รหัสหลักสูตร:</b> <%= meta.curriculum_id %><br>
+  <b>ชื่อหลักสูตร:</b> <%= meta.curriculum_name %><br>
+  <b>ภาควิชา:</b> <%= meta.department %>
+</p>
+
+<h3>เทอม 1 (รายวิชาบังคับ)</h3>
+<table border="1" cellpadding="6">
+  <tr><th>รหัส</th><th>ชื่อวิชา</th><th>หน่วยกิต</th><th>ผู้สอน</th></tr>
+  <% t1.forEach(v => { %>
+    <tr>
+      <td><%= v.subject_id %></td>
+      <td><%= v.name_th %></td>
+      <td><%= v.credits %></td>
+      <td><%= v.instructor %></td>
+    </tr>
+  <% }) %>
+</table>
+
+<h3 style="margin-top:18px;">เทอม 2 (รายวิชาบังคับ)</h3>
+<table border="1" cellpadding="6">
+  <tr><th>รหัส</th><th>ชื่อวิชา</th><th>หน่วยกิต</th><th>ผู้สอน</th></tr>
+  <% t2.forEach(v => { %>
+    <tr>
+      <td><%= v.subject_id %></td>
+      <td><%= v.name_th %></td>
+      <td><%= v.credits %></td>
+      <td><%= v.instructor %></td>
+    </tr>
+  <% }) %>
+</table>

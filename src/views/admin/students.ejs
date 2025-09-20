@@ -1,0 +1,68 @@
+<!--
+  File: src/views/admin/students.ejs
+  Role: View สำหรับ "หน้ารวมรายชื่อนักศึกษา" (ฝั่งแอดมิน)
+  Responsibilities:
+    - แสดงรายชื่อนักศึกษาทั้งหมด (ยกเว้น admin01)
+    - มีฟอร์มค้นหา, กรองตามโรงเรียน, เรียงลำดับ (ชื่อ / อายุ)
+    - ปุ่ม reset ฐานข้อมูล (เรียก /admin/tools/reset)
+  Data contract (Controller: GET /admin/students):
+    - list    : array ของนักศึกษา { student_id, first_name, last_name, current_school, birth_date }
+    - q       : คำค้นหา (string)
+    - school  : โรงเรียนที่เลือกกรอง
+    - sort    : เกณฑ์การเรียง (name หรือ age)
+    - schools : รายการชื่อโรงเรียนทั้งหมด (สำหรับ dropdown filter)
+-->
+
+<h2>หน้ารวมนักศึกษา</h2>
+
+<!-- ฟอร์มค้นหา/กรอง -->
+<form method="get" action="/admin/students" style="margin:10px 0;">
+  <input name="q" placeholder="ค้นหา รหัส/ชื่อ" value="<%= q || '' %>" style="min-width:220px;">
+  
+  <select name="school">
+    <option value="">-- กรองตามโรงเรียน --</option>
+    <% (schools || []).forEach(s => { %>
+      <option value="<%= s %>" <%= (school===s?'selected':'') %>><%= s %></option>
+    <% }) %>
+  </select>
+
+  <select name="sort">
+    <option value="name" <%= sort==='name'?'selected':'' %>>เรียงตามชื่อ</option>
+    <option value="age"  <%= sort==='age'?'selected':'' %>>เรียงตามอายุ</option>
+  </select>
+
+  <button type="submit">กรอง</button>
+  <a href="/admin/students">ล้างตัวกรอง</a>
+
+  <!-- ปุ่มรีเซ็ตฐานข้อมูล -->
+  <a href="/admin/tools/reset" style="margin-left:15px; color:#b00; font-weight:bold;">
+    ⚠️ รีเซ็ตฐานข้อมูล (Reset Default)
+  </a>
+</form>
+
+<!-- ตารางรายชื่อนักศึกษา -->
+<table border="1" cellpadding="6" style="margin-top:10px;">
+  <tr>
+    <th>รหัสนักศึกษา</th>
+    <th>ชื่อ-นามสกุล</th>
+    <th>โรงเรียน</th>
+    <th>วันเกิด</th>
+    <th></th>
+  </tr>
+  <% list.forEach(st => { %>
+    <tr>
+      <td><%= st.student_id %></td>
+      <td><%= st.first_name %> <%= st.last_name %></td>
+      <td><%= st.current_school %></td>
+      <td><%= st.birth_date %></td>
+      <td><a href="/admin/students/<%= st.student_id %>">ดูประวัติ</a></td>
+    </tr>
+  <% }) %>
+</table>
+
+<!--
+  หมายเหตุ:
+  - Controller ใช้ StudentRepo.searchList({ q, school, sort }) เพื่อดึงข้อมูล
+  - dropdown โรงเรียนสร้างจาก DISTINCT current_school
+  - ปุ่ม "ดูประวัติ" จะไปยัง student_detail.ejs ของนักศึกษาคนนั้น
+-->

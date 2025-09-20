@@ -1,0 +1,75 @@
+<!--
+  File: src/views/admin/grade_form.ejs
+  Role: View สำหรับแอดมินใช้ "กรอกเกรด" ของนักศึกษาในแต่ละวิชา
+  Responsibilities:
+    - แสดงรายละเอียดวิชาที่เลือก (subject_id, name_th, credits, instructor)
+    - แสดงรายชื่อนักศึกษาที่ลงทะเบียนวิชานี้
+    - มีช่อง input ให้กรอก/แก้ไขเกรด (A, B+, B, C+, C, D+, D, F, S, U)
+    - ส่งกลับไปยัง POST /admin/grades/:subjectId
+  Data contract (ถูกเตรียมโดย Controller: GET /admin/grades/:subjectId):
+    - subject : อ็อบเจ็กต์รายวิชาที่เลือก (จาก SubjectRepo.findById)
+    - list    : อาร์เรย์นักศึกษาที่ลงทะเบียนวิชานี้แล้ว (JOIN RegisteredSubject + Students)
+      โครงสร้าง: { student_id, first_name, last_name, grade }
+    - count   : จำนวนคนลงทะเบียนวิชานี้
+-->
+
+<h2>กรอกเกรดรายวิชา</h2>
+
+<!-- ข้อมูลรายวิชา -->
+<section style="margin-bottom:12px;">
+  <p><b>รหัสวิชา:</b> <%= subject.subject_id %></p>
+  <p><b>ชื่อวิชา:</b> <%= subject.name_th %></p>
+  <p><b>หน่วยกิต:</b> <%= subject.credits %></p>
+  <p><b>ผู้สอน:</b> <%= subject.instructor %></p>
+  <p><b>จำนวนผู้ลงทะเบียน:</b> <%= count %> คน</p>
+</section>
+
+<hr>
+
+<!-- ตารางรายชื่อนักศึกษา -->
+<% if (!list || list.length === 0) { %>
+  <p>ยังไม่มีนักศึกษาลงทะเบียนในวิชานี้</p>
+<% } else { %>
+  <!-- ฟอร์มส่งเกรดกลับไป -->
+  <form method="post" action="/admin/grades/<%= subject.subject_id %>">
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>รหัสนักศึกษา</th>
+        <th>ชื่อ-นามสกุล</th>
+        <th>เกรดปัจจุบัน</th>
+        <th>กรอกเกรดใหม่</th>
+      </tr>
+
+      <% list.forEach(st => { %>
+        <tr>
+          <td><%= st.student_id %></td>
+          <td><%= st.first_name %> <%= st.last_name %></td>
+          <td><%= st.grade || "-" %></td>
+          <td>
+            <!--
+              name="grades[student_id]" ทำให้ Express แปลงเป็น object:
+              req.body.grades = { '69000001': 'A', '69000002': 'B' }
+            -->
+            <input 
+              type="text" 
+              name="grades[<%= st.student_id %>]" 
+              placeholder="A / B+ / C / ... / S / U"
+              value="<%= st.grade || '' %>"
+              style="width:70px;"
+            >
+          </td>
+        </tr>
+      <% }) %>
+    </table>
+
+    <button type="submit" style="margin-top:10px;">บันทึกเกรด</button>
+  </form>
+<% } %>
+
+<!--
+  หมายเหตุ:
+  - Controller (admin.routes.js) จะ validate ค่าที่รับมา
+    โดย whitelist: A, B+, B, C+, C, D+, D, F, S, U
+  - ถ้าค่าไม่ตรงเกณฑ์ จะถูกข้าม (ไม่บันทึก)
+  - หลังบันทึกเสร็จ redirect กลับหน้านี้ พร้อม flash message "บันทึกเกรดเรียบร้อย"
+-->

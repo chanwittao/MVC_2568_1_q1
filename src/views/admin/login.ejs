@@ -1,0 +1,30 @@
+<!--
+  File: src/views/admin/login.ejs
+  Role: View สำหรับ "เข้าสู่ระบบแอดมิน"
+  Responsibilities:
+    - แสดงฟอร์มให้กรอก user_id และ password
+    - ส่งข้อมูลไปยัง POST /admin/login
+  Data contract:
+    - Controller: GET /admin/login => render view นี้
+    - Controller: POST /admin/login => ตรวจสอบ user_id, password
+  UX note:
+    - ใช้ session.flash แสดงข้อความผิดพลาด เช่น "รหัสผ่านไม่ถูกต้อง"
+-->
+
+<h2>เข้าสู่ระบบแอดมิน</h2>
+
+<form method="post" action="/admin/login" style="margin-top:10px; max-width:420px;">
+  <div style="margin-bottom:8px;">
+    <label for="u">รหัสผู้ใช้:</label><br>
+    <input id="u" name="username" placeholder="เช่น admin01" required>
+  </div>
+
+  <div style="margin-bottom:12px;">
+    <label for="p">รหัสผ่าน:</label><br>
+    <input id="p" name="password" type="password" required>
+  </div>
+
+  <button type="submit">เข้าสู่ระบบ</button>
+</form>
+
+<p style="margin-top:10px;"><small>TIP: ใช้ <code>admin01 / admin</code></small></p>

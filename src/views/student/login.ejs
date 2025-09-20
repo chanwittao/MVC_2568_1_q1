@@ -1,0 +1,21 @@
+<!--
+  File: src/views/student/login.ejs
+  Role: View สำหรับ "เข้าสู่ระบบนักศึกษา"
+-->
+
+<h2>เข้าสู่ระบบนักศึกษา</h2>
+
+<form method="post" action="/login" style="margin-top:10px;">
+  <label for="sid">รหัสนักศึกษา (8 หลัก ขึ้นต้น 69)</label><br>
+  <input
+    id="sid"
+    name="student_id"
+    placeholder="เช่น 69000001"
+    required
+    pattern="69[0-9]{6}">
+  <button type="submit">เข้าสู่ระบบ</button>
+</form>
+
+<p style="margin-top:10px;">
+  <small>TIP: ใช้รหัสตัวอย่าง <code>69000001</code></small>
+</p>

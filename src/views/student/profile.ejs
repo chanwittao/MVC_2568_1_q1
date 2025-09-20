@@ -1,0 +1,70 @@
+<!--
+  File: src/views/student/profile.ejs
+  Role: View หน้าแรกของ "นักศึกษา" หลังเข้าสู่ระบบ
+  Responsibilities:
+    - แสดงข้อมูลส่วนตัวของนักศึกษา
+    - แสดงรายการ "รายวิชาที่ลงทะเบียนแล้ว" พร้อมเกรดที่ได้รับ (ถ้ายังไม่กรอกให้แสดง "-")
+  Data contract (เตรียมโดย Controller: GET /student/profile):
+    - student  : อ็อบเจ็กต์ข้อมูลนักศึกษา จาก StudentRepo.findById()
+    - enrolled : อาร์เรย์วิชาที่ลงแล้ว + เกรด จาก StudentRepo.subjectsWithGrade()
+      โครงสร้างแต่ละรายการ: { subject_id, name_th, credits, grade_mode, grade }
+  UX notes:
+    - Navbar หลักอยู่ใน layouts/main.ejs แล้ว
+-->
+
+<h2>โปรไฟล์นักศึกษา</h2>
+
+<section style="margin-bottom:12px;">
+  <p><b>รหัสนักศึกษา:</b> <%= student.student_id %></p>
+  <p><b>ชื่อ-นามสกุล:</b> <%= student.first_name %> <%= student.last_name %></p>
+  <p><b>โรงเรียนปัจจุบัน:</b> <%= student.current_school %></p>
+  <p><b>วันเดือนปีเกิด:</b> <%= student.birth_date %></p>
+  <p><b>อีเมล:</b> <%= student.email %></p>
+  <p>
+    <b>รหัสหลักสูตร:</b> <%= student.curriculum_id %>
+    <a href="/curriculum/<%= student.curriculum_id %>" style="margin-left:8px;">ดูโครงสร้างหลักสูตรปี 1</a>
+  </p>
+</section>
+
+<hr>
+
+<section style="margin-top:12px;">
+  <h3>รายวิชาที่ลงทะเบียนแล้ว</h3>
+
+  <% if (!subjects || subjects.length === 0) { %>
+    <p>ยังไม่มีการลงทะเบียนวิชา</p>
+  <% } else { %>
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>รหัสวิชา</th>
+        <th>ชื่อวิชา</th>
+        <th>หน่วยกิต</th>
+        <th>โหมดเกรด</th>
+        <th>เกรด</th>
+      </tr>
+      <% subjects.forEach(row => { %>
+        <tr>
+          <td><%= row.subject_id %></td>
+          <td><%= row.name_th %></td>
+          <td><%= row.credits %></td>
+          <td><%= row.grade_mode %></td>
+          <td><%= row.grade || "-" %></td>
+        </tr>
+      <% }) %>
+    </table>
+  <% } %>
+</section>
+
+<hr style="margin-top:20px;">
+
+<!-- ปุ่มทดสอบ Reset (นักศึกษากดแล้วจะถูกบังคับให้ login แอดมินก่อน) -->
+<section style="margin-top:10px;">
+  <p><b>⚠️ ปุ่มสำหรับทดสอบระบบ:</b></p>
+  <a href="/admin/tools/reset" style="color:#b00;font-weight:bold;">
+    รีเซ็ตฐานข้อมูล (Reset Default)
+  </a>
+  <p style="font-size:small;color:#555;">
+    * ปุ่มนี้จะล้างข้อมูลทั้งหมดแล้วสร้างใหม่ (migrate+seed) 
+    หลังรีเซ็ตเสร็จ กรุณาเข้าสู่ระบบอีกครั้งด้วย <code>69000001</code>
+  </p>
+</section>

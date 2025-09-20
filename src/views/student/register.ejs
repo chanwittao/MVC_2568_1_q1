@@ -1,0 +1,44 @@
+<!-- File: src/views/student/register.ejs
+     Role: ฟอร์มสมัครนักศึกษาใหม่ (อายุ >= 15 ปี) -->
+
+<h2>สมัครนักศึกษาใหม่</h2>
+
+<form method="post" action="/register" style="max-width:520px;display:grid;gap:8px">
+  <label>รหัสนักศึกษา (8 หลัก เริ่ม 69)
+    <input name="student_id" required pattern="69[0-9]{6}" placeholder="เช่น 69001234">
+  </label>
+
+  <label>คำนำหน้า
+    <input name="prefix" required placeholder="Mr./Ms./ด.ช./ด.ญ./น.ส. ฯลฯ">
+  </label>
+
+  <label>ชื่อ
+    <input name="first_name" required>
+  </label>
+
+  <label>นามสกุล
+    <input name="last_name" required>
+  </label>
+
+  <label>วันเกิด (YYYY-MM-DD)
+    <input name="birth_date" type="date" required>
+  </label>
+
+  <label>โรงเรียนปัจจุบัน
+    <input name="current_school" required>
+  </label>
+
+  <label>อีเมลติดต่อ
+    <input name="email" type="email" required>
+  </label>
+
+  <label>รหัสหลักสูตร (8 หลัก ตัวแรกไม่เป็น 0)
+    <input name="curriculum_id" required pattern="[1-9][0-9]{7}" placeholder="เช่น 11000001">
+  </label>
+
+  <button type="submit">สมัคร</button>
+</form>
+
+<p style="margin-top:8px;font-size:12px;color:#666">
+  ตัวอย่างรหัสหลักสูตร: 11000001 (CS Year 1), 11000002 (Engineering Year 1), 11000003 (Data Science Year 1)
+</p>

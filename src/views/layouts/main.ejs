@@ -1,0 +1,45 @@
+<!-- File: src/views/layouts/main.ejs -->
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ระบบลงทะเบียนเรียนล่วงหน้า</title>
+  <style>
+    body { font-family: Tahoma, sans-serif; margin: 20px; }
+    nav a { margin-right: 12px; }
+    .flash { padding: 8px; background: #fce4ec; margin-bottom: 10px; border: 1px solid #f48fb1; }
+  </style>
+</head>
+<body>
+
+  <%
+    // ดึง user จาก res.locals (ถูก set ใน app.js)
+    const currentUser = (typeof user !== 'undefined') ? user : null;
+    const role = currentUser ? currentUser.role : null;
+    const flashMsg = (typeof flash !== 'undefined') ? flash : null;
+  %>
+
+<nav>
+  <% if (role === 'student') { %>
+    <a href="/student/profile">📄 โปรไฟล์</a>
+    <a href="/student/enroll?term=1">📚 ลงทะเบียนเทอม 1</a>
+    <a href="/student/enroll?term=2">📚 ลงทะเบียนเทอม 2</a>
+    <a href="/logout">🚪 ออกจากระบบ</a>
+  <% } else if (role === 'admin') { %>
+    <a href="/admin/students">👥 หน้ารวมนักศึกษา</a>
+    <a href="/admin/tools/reset" style="color:#b00;font-weight:bold;">⚠️ รีเซ็ตฐานข้อมูล</a>
+    <a href="/logout">🚪 ออกจากระบบ</a>
+  <% } else { %>
+    <a href="/">🔑 เข้าสู่ระบบนักศึกษา</a>
+    <a href="/register">📝 สมัครนักศึกษาใหม่</a>
+    <a href="/admin/login">🛠️ เข้าสู่ระบบแอดมิน</a>
+  <% } %>
+</nav>
+
+  <% if (flashMsg) { %>
+    <div class="flash"><%= flashMsg %></div>
+  <% } %>
+
+  <%- body %>
+</body>
+</html>

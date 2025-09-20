@@ -1,0 +1,62 @@
+<!--
+  File: src/views/admin/student_detail.ejs
+  Role: View สำหรับ "หน้าประวัตินักศึกษา" (ฝั่งแอดมิน)
+  Responsibilities:
+    - แสดงรายละเอียดข้อมูลส่วนตัวนักศึกษา
+    - แสดงรายวิชาที่นักศึกษาคนนั้นลงทะเบียนแล้ว พร้อมเกรด
+    - มีลิงก์ไปยังหน้ากรอกเกรด (/admin/grades/:subjectId)
+  Data contract (Controller: GET /admin/students/:id):
+    - student  : อ็อบเจ็กต์ข้อมูลนักศึกษา (จาก StudentRepo.findById)
+    - enrolled : รายวิชาที่ลงทะเบียนแล้ว { subject_id, name_th, credits, grade_mode, grade }
+-->
+
+<h2>ประวัตินักศึกษา</h2>
+
+<!-- บล็อกข้อมูลส่วนตัว -->
+<section style="margin-bottom:12px;">
+  <p><b>รหัสนักศึกษา:</b> <%= student.student_id %></p>
+  <p><b>ชื่อ-นามสกุล:</b> <%= student.first_name %> <%= student.last_name %></p>
+  <p><b>โรงเรียนปัจจุบัน:</b> <%= student.current_school %></p>
+  <p><b>วันเดือนปีเกิด:</b> <%= student.birth_date %></p>
+  <p><b>อีเมล:</b> <%= student.email %></p>
+  <p><b>รหัสหลักสูตรที่ลงทะเบียน:</b> <%= student.curriculum_id %></p>
+</section>
+
+<hr>
+
+<!-- ตารางรายวิชาที่ลงแล้ว -->
+<section style="margin-top:12px;">
+  <h3>รายวิชาที่นักศึกษาลงทะเบียนแล้ว</h3>
+
+  <% if (!enrolled || enrolled.length === 0) { %>
+    <p>ยังไม่มีการลงทะเบียนวิชา</p>
+  <% } else { %>
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>รหัสวิชา</th>
+        <th>ชื่อวิชา</th>
+        <th>หน่วยกิต</th>
+        <th>โหมดเกรด</th> <!-- LETTER = A-D, SU = S/U -->
+        <th>เกรด</th>
+        <th>จัดการ</th>
+      </tr>
+
+      <% enrolled.forEach(e => { %>
+        <tr>
+          <td><%= e.subject_id %></td>
+          <td><%= e.name_th %></td>
+          <td><%= e.credits %></td>
+          <td><%= e.grade_mode %></td>
+          <td><%= e.grade || "-" %></td>
+          <td><a href="/admin/grades/<%= e.subject_id %>">กรอกเกรด</a></td>
+        </tr>
+      <% }) %>
+    </table>
+  <% } %>
+</section>
+
+<!--
+  หมายเหตุ:
+  - Controller จะใช้ StudentRepo.subjectsWithGrade() เพื่อดึงรายวิชาที่ลงทะเบียนแล้ว
+  - ปุ่ม "กรอกเกรด" จะพาไปที่ /admin/grades/:subjectId เพื่อแอดมินกรอก/แก้ไขเกรด
+-->
